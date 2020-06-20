@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 
@@ -115,13 +116,28 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
 
+                    finish();
                     progressBar.setVisibility(View.INVISIBLE);
+                    Intent goHome = new Intent(getApplicationContext(),Home.class);
+                    goHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(goHome);
+
 
                     Toast.makeText(getApplicationContext(),"Successful",Toast.LENGTH_SHORT).show();
                 }else
                 {
                     progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplicationContext(),"Failed",Toast.LENGTH_SHORT).show();
+
+                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
+                    {
+                        Toast.makeText(getApplicationContext()," user already registered",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(),"Error :" + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+
+                    }
                 }
 
             }
